@@ -1,7 +1,7 @@
 #include "hash.h"
 
 Contact::Contact() {
-	name = "";
+	name = "DEFAULT NAME";
 	phoneNumber = 0;
 }
 
@@ -110,7 +110,7 @@ Node* LinkedList::operator[](int index) {
 }
 
 int LinkedList::addTail(std::string name, long phoneNumber) {
-	Node * pTemp = pHead;
+	Node * pTemp{ pHead };
 	while (pTemp->pNext != NULL) {
 		pTemp = pTemp->pNext;
 	}
@@ -119,10 +119,44 @@ int LinkedList::addTail(std::string name, long phoneNumber) {
 	return 1;
 }
 
+int LinkedList::addPosition(std::string name, long phoneNumber, int pos)
+{
+	if (pos < 1 || pos > size + 1) {
+		return -1;
+	}
+	
+	if (pos == 0) {
+		addHead(name, phoneNumber);
+		return 1;
+	}
+
+	if (pos == size + 1) {
+		addTail(name, phoneNumber);
+		return 1;
+	}
+	
+	Node* pTemp{ pHead };
+
+	for (int i{ 1 }; i < pos; i++) {
+		pTemp = pTemp->pNext;
+	}
+	
+	pTemp->pNext = new Node(name, phoneNumber, pTemp->pNext->pNext);
+	++size;
+	return 1;
+}
+
+
+
 int LinkedList::addNodeBiggerPosition(std::string name, long phoneNumber, int balance)
 {
 	int charge{ balance };
-
+	while (charge > 1) {
+		addTail("DEFAULT NAME", 0);
+		--charge;
+	}
+	addTail(name, phoneNumber);
+	return 1;
 }
 
 Node* LinkedList::getHeadPointer() {
@@ -148,16 +182,50 @@ int Hash::hashFunction(int key) {
 	return key % HASH_FACTOR;
 }
 
-int Hash::insert(int value)
+int Hash::insert(std::string name, long phoneNumber)
 {
-	int hash{ hashFunction(value) };
+	int hash{ hashFunction(phoneNumber) };
+	int size{ hashTable.getSize() - 1};
 
-	if (!this->hashTable.getHeadPointer()) {
+	if (hash < size + 1) {
+		if (hash == size) {
+			hashTable.addTail(name, phoneNumber);
+			return 1;
+		}
+		if (hashTable[hash]->contact.name == "DEFAULT NAME") {
+			hashTable[hash]->contact.name = name;
+			hashTable[hash]->contact.phoneNumber = phoneNumber;
+			return 1;
+		}
+		else {
+			int count{ 0 };
+			Node* pTemp{ hashTable[hash] };
+			while (pTemp->pNext->contact.name != "DEFAULT NAME" && pTemp->pNext) {
+				pTemp = pTemp->pNext;
+				++count;
+			}
 
+			if (pTemp->contact.name != "DEFAULT NAME") {
+				this->hashTable.addPosition(name, phoneNumber, hash + count + 1);
+				return 1;
+			}
+			else {
+				pTemp->contact.name = name;
+				pTemp->contact.phoneNumber = phoneNumber;
+				return 1;
+			}
+		}
 	}
-
+	else {
+		this->hashTable.addNodeBiggerPosition(name, phoneNumber, hash - size);
+		return 1;
+	}
+	
 }
+
+
 
 Hash::Hash()
 {
+	this->hashTable.createLinkedList("DEFAULT NAME", 0);
 }
