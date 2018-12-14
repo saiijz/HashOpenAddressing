@@ -3,7 +3,7 @@
 
 int main() {
 	Hash hash;
-
+	
 	hash.insert("iii", 2112);
 	hash.insert("ubin", 1234);
 	hash.insert("haha", 231);
@@ -13,5 +13,8 @@ int main() {
 	hash.insert("ddd", 2411);
 	hash.insert("fff", 6969);
 	hash.insert("ggg", 1998);
+	
+	hash.insert("aaa", 8);
+	hash.insert("bbb", 1);
 	system("pause");
 }

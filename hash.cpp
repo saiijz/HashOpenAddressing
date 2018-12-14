@@ -130,7 +130,7 @@ int LinkedList::addPosition(std::string name, long phoneNumber, int pos)
 		return 1;
 	}
 
-	if (pos == size + 1) {
+	if (pos == size) {
 		addTail(name, phoneNumber);
 		return 1;
 	}
@@ -178,6 +178,11 @@ LinkedList::LinkedList() {
 	size = 0;
 }
 
+int Hash::createHash(int capacity)
+{
+
+}
+
 int Hash::hashFunction(int key) {
 	return key % HASH_FACTOR;
 }
@@ -187,11 +192,11 @@ int Hash::insert(std::string name, long phoneNumber)
 	int hash{ hashFunction(phoneNumber) };
 	int size{ hashTable.getSize() - 1};
 
+	if (hash == size + 1) {
+		hashTable.addTail(name, phoneNumber);
+		return 1;
+	}
 	if (hash < size + 1) {
-		if (hash == size) {
-			hashTable.addTail(name, phoneNumber);
-			return 1;
-		}
 		if (hashTable[hash]->contact.name == "DEFAULT NAME") {
 			hashTable[hash]->contact.name = name;
 			hashTable[hash]->contact.phoneNumber = phoneNumber;
@@ -200,7 +205,7 @@ int Hash::insert(std::string name, long phoneNumber)
 		else {
 			int count{ 0 };
 			Node* pTemp{ hashTable[hash] };
-			while (pTemp->pNext->contact.name != "DEFAULT NAME" && pTemp->pNext) {
+			while (pTemp->contact.name != "DEFAULT NAME" && pTemp->pNext != NULL) {
 				pTemp = pTemp->pNext;
 				++count;
 			}

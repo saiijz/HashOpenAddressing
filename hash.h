@@ -47,6 +47,7 @@ private:
 	LinkedList hashTable;
 
 public:
+	int createHash(int);
 	int hashFunction(int);
 	int insert(std::string, long);
 	Hash();
