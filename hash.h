@@ -55,10 +55,10 @@ public:
 	Node* linearProbing(Node*);
 	Node* quadraticProbing(long);
 	int insert(std::string, long);
-	Node* searchLinearProbing(int);
-	
-	int deleteKey(int);
-	int search(int);
+	Node* searchLinearProbing(long);
+	Node* searchQuadraticProbing(long);
+	int deleteKey(long);
+	int search(long);
 	
 	Hash();
 };
