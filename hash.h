@@ -54,11 +54,13 @@ public:
 	int hashFunction(int);
 	Node* linearProbing(Node*);
 	Node* quadraticProbing(long);
+	Node* doubleHashing(long);
 	int insert(std::string, long);
 	Node* searchLinearProbing(long);
 	Node* searchQuadraticProbing(long);
+	Node* searchDoubleHashing(long);
 	int deleteKey(long);
 	int search(long);
-	
+	int getSize();
 	Hash();
 };
