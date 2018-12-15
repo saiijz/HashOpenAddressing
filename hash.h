@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <math.h>
 #define DEFAULT_NAME "DEFAULT NAME"
 constexpr auto DEFAULT_NUMBER = 0;
 
@@ -52,10 +53,12 @@ public:
 	int createHash(int);
 	int hashFunction(int);
 	Node* linearProbing(Node*);
-	int fixedInsert(std::string, long);
+	Node* quadraticProbing(long);
+	int insert(std::string, long);
 	Node* searchLinearProbing(int);
+	
 	int deleteKey(int);
 	int search(int);
-	int insert(std::string, long);
+	
 	Hash();
 };

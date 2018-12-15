@@ -6,11 +6,11 @@
 int main() {
 	Hash hash;
 	hash.createHash(5);
-	hash.fixedInsert("ubin", 55);
-	hash.fixedInsert("susu", 42);
-	hash.fixedInsert("imin", 17);
-	hash.fixedInsert("uboa", 22);
-	hash.fixedInsert("hoa", 87);
+	hash.insert("ubin", 55);
+	hash.insert("susu", 42);
+	hash.insert("imin", 17);
+	hash.insert("uboa", 22);
+	hash.insert("hoa", 87);
 	hash.search(117);
 	hash.deleteKey(22);
 	hash.deleteKey(87);
@@ -20,7 +20,7 @@ int main() {
 	srand(time(NULL));
 	for (int i{ 0 }; i < 5; i++) {
 		int temp{ rand() % 100 };
-		hash.fixedInsert("unnamed",temp);
+		hash.insert("unnamed",temp);
 	}
 	std::cout << "ting jian xia yu de sheng yin" << std::endl;
 	system("pause");

@@ -1,3 +1,5 @@
-﻿  test.cpp
+﻿  hash.cpp
+  test.cpp
 e:\source\newest\hashopenaddressing\test.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating Code...
   HashOpenAddressing.vcxproj -> E:\source\newest\HashOpenAddressing\x64\Debug\HashOpenAddressing.exe
