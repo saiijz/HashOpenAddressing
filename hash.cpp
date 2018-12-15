@@ -209,12 +209,50 @@ Node * Hash::linearProbing(Node *pTemp)
 		return pCheck;
 	}
 	else {
-		return NULL;
+		return nullptr;
 	}
 }
 
-int Hash::fixedInsert(std::string name, long phoneNumber)
+Node * Hash::quadraticProbing(long phoneNumber)
 {
+	int i{ 1 };
+	int hashQuad;
+	while (true) {
+		if (i == hashFactor) {
+			return nullptr;
+		}
+		hashQuad = (phoneNumber + static_cast<long>(pow(i, 2))) % hashFactor;
+		if (hashTable[hashQuad]->contact.phoneNumber == DEFAULT_NUMBER) {
+			return hashTable[hashQuad];
+		}
+		++i;
+	}
+}
+
+Node * Hash::doubleHashing(long phoneNumber)
+{
+	int i{ 1 };
+	int secondHash{ (22 * phoneNumber) % 31 };
+	int hash;
+
+	while (true) {
+		if (i == hashFactor) {
+			return nullptr;
+		}
+		hash = (hashFunction(phoneNumber) + i * secondHash) % hashFactor;
+		if (hashTable[hash]->contact.phoneNumber == DEFAULT_NUMBER) {
+			return hashTable[hash];
+		}
+		++i;
+	}
+	return nullptr;
+}
+
+int Hash::insert(std::string name, long phoneNumber)
+{
+	if (search(phoneNumber) != -1) {
+		return -1;
+	}
 	if (size >= hashFactor - 1) {
 		return -1;
 	}
@@ -228,10 +266,26 @@ int Hash::fixedInsert(std::string name, long phoneNumber)
 		return 1;
 	}
 	else {
-		Node *pIns{ linearProbing(hashTable[hashKey]) };
+
+		//linear probing
+		/*Node *pIns{ linearProbing(hashTable[hashKey]) };
 		if (!pIns) {
 			pIns = linearProbing(hashTable[0]);
+		}*/
+
+		//quadratic probing
+		/*Node *pIns{ quadraticProbing(phoneNumber) };
+		if (!pIns) {
+			return -1;
+		}*/
+		
+
+		//double hashing
+		Node *pIns{ doubleHashing(phoneNumber) };
+		if (!pIns) {
+			return -1;
 		}
+
 		pIns->contact.name = name;
 		pIns->contact.phoneNumber = phoneNumber;
 		++size;
@@ -239,7 +293,7 @@ int Hash::fixedInsert(std::string name, long phoneNumber)
 	}
 }
 
-Node* Hash::searchLinearProbing(int phoneNumber)
+Node* Hash::searchLinearProbing(long phoneNumber)
 {
 	int hashKey{ hashFunction(phoneNumber) };
 	Node *pTemp{ hashTable[hashKey] };
@@ -265,13 +319,49 @@ Node* Hash::searchLinearProbing(int phoneNumber)
 		pTemp = pTemp->pNext;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
-int Hash::deleteKey(int phoneNumber)
-{
-	Node *pTemp{ searchLinearProbing(phoneNumber) };
+Node * Hash::searchQuadraticProbing(long phoneNumber) {
+	int i{ 0 };
+	long hash{ 0 };
+
+	while (true) {
+		if (i == hashFactor) {
+			return nullptr;
+		}
+		hash = (phoneNumber + static_cast<long>(pow(i, 2))) % hashFactor;
 	
+		if (hashTable[hash]->contact.phoneNumber == phoneNumber) {
+			return hashTable[hash];
+		}
+		++i;
+	}
+}
+
+Node * Hash::searchDoubleHashing(long phoneNumber)
+{
+	int i{ 0 };
+	int secondHash{ (22 * phoneNumber) % 31 };
+	int hash;
+
+	while (true) {
+		if (i == hashFactor) {
+			return nullptr;
+		}
+		hash = (hashFunction(phoneNumber) + i * secondHash) % hashFactor;
+		if (hashTable[hash]->contact.phoneNumber == phoneNumber) {
+			return hashTable[hash];
+		}
+		++i;
+	}
+}
+
+int Hash::deleteKey(long phoneNumber)
+{
+	//Node *pTemp{ searchLinearProbing(phoneNumber) };
+	//Node *pTemp { searchQuadraticProbing(phoneNumber) };
+	Node *pTemp{ searchDoubleHashing(phoneNumber) };
 	if (!pTemp) {
 		return -1;
 	}
@@ -282,12 +372,13 @@ int Hash::deleteKey(int phoneNumber)
 	return 1;
 }
 
-int Hash::search(int phoneNumber)
+int Hash::search(long phoneNumber)
 {
 	Node* result;
 
-	result = searchLinearProbing(phoneNumber);
-
+	//result = searchQuadraticProbing(phoneNumber);
+	//result = searchLinearProbing(phoneNumber);
+	result = searchDoubleHashing(phoneNumber);
 	if (!result) {
 		return -1;
 	}
@@ -295,51 +386,14 @@ int Hash::search(int phoneNumber)
 	return result->contact.phoneNumber;
 }
 
-
-
-int Hash::insert(std::string name, long phoneNumber)
+int Hash::getSize()
 {
-	int hash{ hashFunction(phoneNumber) };
-	int size{ hashTable.getSize() - 1};
-
-	if (hash == size + 1) {
-		hashTable.addTail(name, phoneNumber);
-		return 1;
-	}
-	if (hash < size + 1) {
-		if (hashTable[hash]->contact.name == "DEFAULT NAME") {
-			hashTable[hash]->contact.name = name;
-			hashTable[hash]->contact.phoneNumber = phoneNumber;
-			return 1;
-		}
-		else {
-			int count{ 0 };
-			Node* pTemp{ hashTable[hash] };
-			while (pTemp->contact.name != "DEFAULT NAME" && pTemp->pNext != NULL) {
-				pTemp = pTemp->pNext;
-				++count;
-			}
-
-			if (pTemp->contact.name != "DEFAULT NAME") {
-				this->hashTable.addPosition(name, phoneNumber, hash + count + 1);
-				return 1;
-			}
-			else {
-				pTemp->contact.name = name;
-				pTemp->contact.phoneNumber = phoneNumber;
-				return 1;
-			}
-		}
-	}
-	else {
-		this->hashTable.addNodeBiggerPosition(name, phoneNumber, hash - size);
-		return 1;
-	}
-	
+	return this->size;
 }
-
 
 
 Hash::Hash()
 {
 }
+
+
