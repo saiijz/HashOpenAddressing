@@ -1,8 +1,8 @@
 #include "hash.h"
 
 Contact::Contact() {
-	name = "DEFAULT NAME";
-	phoneNumber = 0;
+	name = DEFAULT_NAME;
+	phoneNumber = DEFAULT_NUMBER;
 }
 
 Node::Node() {
@@ -180,12 +180,122 @@ LinkedList::LinkedList() {
 
 int Hash::createHash(int capacity)
 {
-
+	if (capacity > 1) {
+		hashTable.createLinkedList(DEFAULT_NAME, DEFAULT_NUMBER);
+		for (int i{ 1 }; i < capacity; i++) {
+			hashTable.addTail(DEFAULT_NAME, DEFAULT_NUMBER);
+		}
+		this->hashFactor = capacity;
+		size = 0;
+		return 1;
+	}
+	return -1;
 }
 
 int Hash::hashFunction(int key) {
-	return key % HASH_FACTOR;
+	return key % hashFactor;
 }
+
+Node * Hash::linearProbing(Node *pTemp)
+{
+	Node * pCheck{ pTemp };
+	while (pCheck->contact.name != DEFAULT_NAME) {
+		if (pCheck->pNext == NULL) {
+			break;
+		}
+		pCheck = pCheck->pNext;
+	}
+	if (pCheck->contact.name == DEFAULT_NAME) {
+		return pCheck;
+	}
+	else {
+		return NULL;
+	}
+}
+
+int Hash::fixedInsert(std::string name, long phoneNumber)
+{
+	if (size >= hashFactor - 1) {
+		return -1;
+	}
+
+	int hashKey{ hashFunction(phoneNumber) };
+
+	if (hashTable[hashKey]->contact.name == DEFAULT_NAME) {
+		hashTable[hashKey]->contact.name = name;
+		hashTable[hashKey]->contact.phoneNumber = phoneNumber;
+		++size;
+		return 1;
+	}
+	else {
+		Node *pIns{ linearProbing(hashTable[hashKey]) };
+		if (!pIns) {
+			pIns = linearProbing(hashTable[0]);
+		}
+		pIns->contact.name = name;
+		pIns->contact.phoneNumber = phoneNumber;
+		++size;
+		return 1;
+	}
+}
+
+Node* Hash::searchLinearProbing(int phoneNumber)
+{
+	int hashKey{ hashFunction(phoneNumber) };
+	Node *pTemp{ hashTable[hashKey] };
+
+	while (true) {
+		if (pTemp->contact.phoneNumber == phoneNumber) {
+			return pTemp;
+		}
+		if (pTemp->pNext == NULL) {
+			break;
+		}
+		pTemp = pTemp->pNext;
+	}
+
+	pTemp = hashTable[0];
+	while (pTemp != hashTable[hashKey]) {
+		if (pTemp->contact.phoneNumber == DEFAULT_NUMBER) {
+			break;
+		}
+		if (pTemp->contact.phoneNumber == phoneNumber) {
+				return pTemp;
+		}
+		pTemp = pTemp->pNext;
+	}
+
+	return NULL;
+}
+
+int Hash::deleteKey(int phoneNumber)
+{
+	Node *pTemp{ searchLinearProbing(phoneNumber) };
+	
+	if (!pTemp) {
+		return -1;
+	}
+
+	pTemp->contact.name = DEFAULT_NAME;
+	pTemp->contact.phoneNumber = DEFAULT_NUMBER;
+	--size;
+	return 1;
+}
+
+int Hash::search(int phoneNumber)
+{
+	Node* result;
+
+	result = searchLinearProbing(phoneNumber);
+
+	if (!result) {
+		return -1;
+	}
+
+	return result->contact.phoneNumber;
+}
+
+
 
 int Hash::insert(std::string name, long phoneNumber)
 {
@@ -232,5 +342,4 @@ int Hash::insert(std::string name, long phoneNumber)
 
 Hash::Hash()
 {
-	this->hashTable.createLinkedList("DEFAULT NAME", 0);
 }

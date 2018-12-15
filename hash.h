@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#define HASH_FACTOR 8
+#define DEFAULT_NAME "DEFAULT NAME"
+constexpr auto DEFAULT_NUMBER = 0;
 
 struct Contact {
 	std::string name;
@@ -45,10 +46,16 @@ class Hash {
 
 private:
 	LinkedList hashTable;
-
+	int hashFactor;
+	int size;
 public:
 	int createHash(int);
 	int hashFunction(int);
+	Node* linearProbing(Node*);
+	int fixedInsert(std::string, long);
+	Node* searchLinearProbing(int);
+	int deleteKey(int);
+	int search(int);
 	int insert(std::string, long);
 	Hash();
 };

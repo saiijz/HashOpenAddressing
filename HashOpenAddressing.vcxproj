@@ -119,7 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hash.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
